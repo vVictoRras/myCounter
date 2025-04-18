@@ -6,30 +6,30 @@ import {Tablo} from "./components/Tablo.tsx";
 function App() {
     const [count, setCount] = useState(0)
 
-    const minValue=0
-    const maxValue=5
+    const minValue = 0
+    const maxValue = 5
 
     const incrementCountHandler = () => {
         setCount(count => count + 1)
     }
 
     const resetCountHandler = () => {
-    setCount(0)
-}
+        setCount(0)
+    }
 
     return (
         <>
             <div className="wrapper">
                 <div className="container">
-                 <Tablo count={count}
-                        maxValue={maxValue}
-                       />
+                    <Tablo count={count}
+                           maxValue={maxValue}
+                    />
                     <div className='button-container'>
-                        <Buttons disabled={count>=maxValue}
+                        <Buttons disabled={count >= maxValue}
                                  title={'inc'}
                                  onClick={incrementCountHandler}/>
 
-                        <Buttons disabled={count===minValue}
+                        <Buttons disabled={count === minValue}
                                  title={'reset'}
                                  onClick={resetCountHandler}/>
                     </div>
