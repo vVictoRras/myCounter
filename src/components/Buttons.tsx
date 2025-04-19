@@ -2,7 +2,7 @@
 type ButtonsProps = {
     onClick: () => void;
     title: string;
-    disabled: boolean;
+    disabled?: boolean;
 }
 
 export const Buttons = ({onClick,title,disabled}:ButtonsProps) => {

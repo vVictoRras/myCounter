@@ -17,6 +17,16 @@ function App() {
         setCount(0)
     }
 
+    // const getFromLocalStorage = () => {
+    // let valueAsString= localStorage.getItem( "countValue")
+    //     if (valueAsString) {
+    //         let newValue=JSON.parse(valueAsString)
+    //         setCount(newValue)
+    //     }
+    // }
+    //
+
+
     return (
         <>
             <div className="wrapper">
@@ -32,6 +42,7 @@ function App() {
                         <Buttons disabled={count === minValue}
                                  title={'reset'}
                                  onClick={resetCountHandler}/>
+
                     </div>
 
                 </div>
