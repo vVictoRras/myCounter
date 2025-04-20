@@ -2,26 +2,25 @@ import React, {ChangeEvent, useState} from 'react';
 import {Buttons} from "./Buttons.tsx";
 import {Inputs} from "./Inputs.tsx";
 
+
+
 export const Settings = () => {
-    const [startValue, setstartValue] = useState('');
+    const [startValue, setStartValue] = useState('');
     const [maxValue, setMaxValue] = useState('');
 
+    const onStartChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        setStartValue(event.target.value);
+    };
 
+    const onMaxChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        setMaxValue(event.target.value);
+    };
 
     const setToLocalStorage = () => {
-        localStorage.setItem('countValue', JSON.stringify(startValue))
-        localStorage.setItem('maxCountValue', JSON.stringify(maxValue))
-
-    }
-
-    const onChangeStartHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setstartValue(event.target.value);
-    }
-
-    const onChangeMaxValueHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setMaxValue(event.target.value);
-    }
-
+        localStorage.setItem('startValue', startValue);
+        localStorage.setItem('maxValue', maxValue);
+        window.location.reload();
+    };
 
     return (
         <>
@@ -29,13 +28,16 @@ export const Settings = () => {
                 <div className="container">
 
                     <div >
-                        <span>Max Value</span>
-                        <Inputs value={startValue} onChange={onChangeStartHandler}/>
-                        <span>Start Value</span>
-                        <Inputs value={maxValue} onChange={onChangeMaxValueHandler}/>
+                        <label>Start value</label>
+                        < Inputs value={startValue} onChange={onStartChangeHandler}/>
+                        <label>Max value</label>
+                        <Inputs  value={maxValue} onChange={onMaxChangeHandler}/>
                     </div>
-                    <Buttons title={'set'}
-                             onClick={setToLocalStorage}/>
+                    <div className={'button'}>
+                        <Buttons title={'set'}
+                                 onClick={setToLocalStorage}/>
+                    </div>
+
                 </div>
             </div>
 

@@ -35,8 +35,9 @@ body {
     color: red
 }
 
-.button-container {
+.button {
     display: flex;
+    background-color: #4dd0ff;
     gap: 20px;
     padding: 10px;
     border: 2px solid #4dd0ff;
