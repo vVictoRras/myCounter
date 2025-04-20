@@ -11,7 +11,7 @@ function App() {
     });
 
     const [maxVal, setMaxVal] = useState<number>(() => {
-        return Number(localStorage.getItem("maxValue")) || 0;
+        return Number(localStorage.getItem("maxValue")) || 5;
     });
 
 
@@ -24,7 +24,6 @@ function App() {
 
     const maxValue = () => {
         const max= localStorage.getItem( "maxValue")
-        setMaxVal(Number(max));
         return Number(max)
         }
 
