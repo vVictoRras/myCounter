@@ -1,10 +1,10 @@
-type TabloProps = {
+type DisplayProps = {
     count: number;
     maxValue: number;
 
 };
 
-export const Tablo = ({ count, maxValue, }: TabloProps) => {
+export const Display = ({ count, maxValue, }: DisplayProps) => {
 
     if (count !== undefined) {
         const isRed = maxValue !== undefined && count === maxValue;

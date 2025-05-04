@@ -1,12 +1,49 @@
-import React, {ChangeEvent, useState} from 'react';
-import {Buttons} from "./Buttons.tsx";
-import {Inputs} from "./Inputs.tsx";
+import { ChangeEvent, useState, useEffect } from 'react';
+import { Buttons } from "./Buttons.tsx";
+import { Inputs } from "./Inputs.tsx";
 
+type SettingsProps = {
+    onClose: () => void;
+}
 
-export const Settings = () => {
-    const [startValue, setStartValue] = useState('');
-    const [maxValue, setMaxValue] = useState('');
-    const [error, setError] = useState<string | null>(null)
+export const Settings = ({ onClose }: SettingsProps) => {
+    const [startValue, setStartValue] = useState(localStorage.getItem('startValue') || '0');
+    const [maxValue, setMaxValue] = useState(localStorage.getItem('maxValue') || '5');
+    const [error, setError] = useState<string | null>(null);
+    const [isValid, setIsValid] = useState(false);
+
+    useEffect(() => {
+        // Валидация при изменении значений
+        const start = Number(startValue);
+        const max = Number(maxValue);
+
+        if (startValue === '' || maxValue === '') {
+            setError('Both fields are required');
+            setIsValid(false);
+            return;
+        }
+
+        if (isNaN(start) || isNaN(max)) {
+            setError('Please enter valid numbers');
+            setIsValid(false);
+            return;
+        }
+
+        if (start < 0 || max < 0) {
+            setError('Value cannot be negative');
+            setIsValid(false);
+            return;
+        }
+
+        if (start >= max) {
+            setError('Start value must be less than max value');
+            setIsValid(false);
+            return;
+        }
+
+        setError(null);
+        setIsValid(true);
+    }, [startValue, maxValue]);
 
     const onStartChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setStartValue(event.target.value);
@@ -17,63 +54,38 @@ export const Settings = () => {
     };
 
     const setToLocalStorage = () => {
-            if (validInputs()){
-                localStorage.setItem('startValue', startValue);
-                localStorage.setItem('maxValue', maxValue);
-                window.location.reload();
-
-            }
-
+        if (isValid) {
+            localStorage.setItem('startValue', startValue);
+            localStorage.setItem('maxValue', maxValue);
+            onClose();
+            // Убрал reload - лучше обновлять состояние через props
+        }
     };
-
-    const validInputs=():boolean=>{
-        const start=Number(startValue)
-        const max=Number(maxValue)
-        if (startValue === '' || maxValue === '') {
-            setError('Both fields are required');
-            return false;
-        }
-
-        if (isNaN(start) || isNaN(max)) {
-            setError('Please enter valid numbers');
-            return false;
-        }
-
-        if (start < 0 || max < 0) {
-            setError('Value cannot be negative');
-            return false;
-        }
-
-        if (start >= max) {
-            setError('Start value must be less than max value');
-            return false;
-        }
-
-        setError(null);
-        return true;
-    }
-
 
     return (
         <>
-            <div className="wrapper">
-                <div className="container">
-
-                    <div>
-                        <label>Start value</label>
-                        < Inputs value={startValue} className={error ? 'error' : ''} onChange={onStartChangeHandler}/>
-                        <label>Max value</label>
-                        <Inputs value={maxValue} className={error ? 'error' : ''} onChange={onMaxChangeHandler}/>
-                    </div>
-                    {error && <div className={'error-message'}>{error}</div>}
-                    <div className={'button'}>
-                        <Buttons title={'set'}
-                                 onClick={setToLocalStorage}/>
-                    </div>
-                </div>
+            <div>
+                <label>Start value</label>
+                <Inputs
+                    value={startValue}
+                    className={error ? 'error' : ''}
+                    onChange={onStartChangeHandler}
+                />
+                <label>Max value</label>
+                <Inputs
+                    value={maxValue}
+                    className={error ? 'error' : ''}
+                    onChange={onMaxChangeHandler}
+                />
             </div>
-
+            {error && <div className={'error-message'}>{error}</div>}
+            <div className={'button'}>
+                <Buttons
+                    title={'set'}
+                    onClick={setToLocalStorage}
+                    disabled={!isValid}
+                />
+            </div>
         </>
     );
 };
-
