@@ -1,13 +1,51 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import { Buttons } from "./components/Buttons.tsx";
+import {CustomButton} from "./components/Buttons.tsx";
 import { Display } from "./components/Display.tsx";
 import { Settings } from "./components/Settings.tsx";
+import {Box, Container, createTheme, CssBaseline, ThemeProvider} from '@mui/material';
+import { ButtonsContainerSX } from './components/ButtonsContainerSX.ts';
+import {MaterialUISwitch} from "./components/Switch.tsx";
+
+export type ThemeMode = 'dark' | 'light'
 
 function App() {
     const [showSettings, setShowSettings] = useState(false);
     const [count, setCount] = useState(0);
     const [maxVal, setMaxVal] = useState(5);
+    const [themeMode, setThemeMode] = useState<ThemeMode>('light')
+
+   const theme = createTheme({
+       palette: {
+           mode: themeMode,
+           primary: {
+               main: '#25aeda',
+           },
+           secondary: {
+               main: '#4dd0ff',
+           },
+           background: {
+               default: themeMode === 'light' ? '#e7e9f3' : '#1e1f26',
+               paper: themeMode === 'light' ? '#ffffff' : '#2a2b32',
+           },
+           text: {
+               primary: themeMode === 'light' ? '#000000' : '#ffffff',
+           },
+       },
+       components: {
+           MuiButton: {
+               styleOverrides: {
+                   root: {
+                       margin: '10px',
+                   },
+               },
+           },
+       },
+    })
+
+    const changeMode = () => {
+        setThemeMode(themeMode === 'light' ? 'dark' : 'light')
+    }
 
     // Загрузка начальных значений из localStorage при монтировании
     useEffect(() => {
@@ -61,33 +99,43 @@ function App() {
     };
 
     return (
-        <div className="wrapper">
-            <div className="container">
+
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Container className={'container'}>
+                    <MaterialUISwitch  onChange={changeMode} />
                 {showSettings ? (
                     <Settings onClose={handleCloseSettings} />
                 ) : (
-                    <>
-                        <Display count={count} maxValue={maxVal} />
-                        <div className='button'>
-                            <Buttons
-                                disabled={count >= maxVal}
-                                title={'inc'}
-                                onClick={incrementCountHandler}
-                            />
-                            <Buttons
-                                disabled={count === minValue()}
-                                title={'reset'}
-                                onClick={resetCountHandler}
-                            />
-                            <Buttons
-                                title={'set'}
-                                onClick={toggleView}
-                            />
-                        </div>
-                    </>
+                    <Box>
+                        <Container className={'container'}>
+                            <Box className={'display'}>
+                                <Display count={count} maxValue={maxVal} />
+                            </Box>
+
+                            <Box sx={ButtonsContainerSX}>
+                                <CustomButton
+                                    disabled={count >= maxVal}
+                                    title={'inc'}
+                                    onClick={incrementCountHandler}
+                                />
+                                <CustomButton
+                                    disabled={count === minValue()}
+                                    title={'reset'}
+                                    onClick={resetCountHandler}
+                                />
+                                <CustomButton
+                                    title={'set'}
+                                    onClick={toggleView}
+                                />
+                            </Box>
+                        </Container>
+
+                    </Box>
                 )}
-            </div>
-        </div>
+            </Container>
+            </ThemeProvider>
+
     )
 }
 

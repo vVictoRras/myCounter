@@ -1,3 +1,5 @@
+import Button from "@mui/material/Button";
+import {Box} from "@mui/material";
 
 type ButtonsProps = {
     onClick: () => void;
@@ -5,11 +7,15 @@ type ButtonsProps = {
     disabled?: boolean;
 }
 
-export const Buttons = ({onClick,title,disabled}:ButtonsProps) => {
+export const CustomButton = ({onClick,title,disabled}:ButtonsProps) => {
     return (
-        <div>
-            <button onClick={onClick} disabled={disabled}>{title}</button>
-        </div>
+        <Box>
+            <Button
+                onClick={onClick}
+                variant="contained"
+                size="small"
+                disabled={disabled}>{title} </Button>
+        </Box>
     );
 };
 

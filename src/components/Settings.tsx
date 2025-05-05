@@ -1,6 +1,7 @@
 import { ChangeEvent, useState, useEffect } from 'react';
-import { Buttons } from "./Buttons.tsx";
-import { Inputs } from "./Inputs.tsx";
+import {CustomButton} from "./Buttons.tsx";
+import {CustomInput} from "./Inputs.tsx";
+import {Box, Container} from "@mui/material";
 
 type SettingsProps = {
     onClose: () => void;
@@ -13,7 +14,6 @@ export const Settings = ({ onClose }: SettingsProps) => {
     const [isValid, setIsValid] = useState(false);
 
     useEffect(() => {
-        // Валидация при изменении значений
         const start = Number(startValue);
         const max = Number(maxValue);
 
@@ -58,34 +58,37 @@ export const Settings = ({ onClose }: SettingsProps) => {
             localStorage.setItem('startValue', startValue);
             localStorage.setItem('maxValue', maxValue);
             onClose();
-            // Убрал reload - лучше обновлять состояние через props
         }
     };
 
     return (
-        <>
-            <div>
+        <Container className={'container'}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
                 <label>Start value</label>
-                <Inputs
+                <CustomInput
                     value={startValue}
                     className={error ? 'error' : ''}
                     onChange={onStartChangeHandler}
                 />
                 <label>Max value</label>
-                <Inputs
+                <CustomInput
                     value={maxValue}
                     className={error ? 'error' : ''}
                     onChange={onMaxChangeHandler}
+
                 />
-            </div>
-            {error && <div className={'error-message'}>{error}</div>}
-            <div className={'button'}>
-                <Buttons
-                    title={'set'}
-                    onClick={setToLocalStorage}
-                    disabled={!isValid}
-                />
-            </div>
-        </>
+
+                {error && <div className={'error-message'}>{error}</div>}
+
+                <Box sx={{ mt: 2 }}>
+                    <CustomButton
+                        title={'set'}
+                        onClick={setToLocalStorage}
+                        disabled={!isValid}
+                    />
+                </Box>
+            </Box>
+        </Container>
+
     );
 };
