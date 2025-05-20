@@ -77,6 +77,8 @@ function App() {
     const resetCountHandler = () => {
         const start = minValue();
         setCount(start);
+        // setCount(0);
+        // setMaxVal(0)
     }
 
     const toggleView = () => {
@@ -108,7 +110,7 @@ function App() {
                     <Settings onClose={handleCloseSettings} />
                 ) : (
                     <Box>
-                        <Container className={'container'}>
+                        <Container className={''}>
                             <Box className={'display'}>
                                 <Display count={count} maxValue={maxVal} />
                             </Box>
