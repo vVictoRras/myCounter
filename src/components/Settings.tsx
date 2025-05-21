@@ -1,74 +1,60 @@
-import { ChangeEvent, useState, useEffect } from 'react';
+import {ChangeEvent, useEffect, useState} from 'react';
 import {CustomButton} from "./Buttons.tsx";
 import {CustomInput} from "./Inputs.tsx";
 import {Box, Container} from "@mui/material";
+import {useAppDispatch} from "../../common/hooks/useAppDispatch.ts";
+import {RootState} from "../app/store.ts";
+import {useAppSelector} from "../../common/hooks/useAppSelector.ts";
+import {setMaxValue, setMinValue} from "../app/counterSlice.ts";
 
 type SettingsProps = {
-    onClose: () => void;
+       onClose: () => void;
 }
 
 export const Settings = ({ onClose }: SettingsProps) => {
-    const [startValue, setStartValue] = useState(localStorage.getItem('startValue') || '0');
-    const [maxValue, setMaxValue] = useState(localStorage.getItem('maxValue') || '5');
+    const dispatch = useAppDispatch()
+    const {minValue, maxValue} = useAppSelector((state:RootState) => state.counter)
+
     const [error, setError] = useState<string | null>(null);
-    const [isValid, setIsValid] = useState(false);
 
     useEffect(() => {
-        const start = Number(startValue);
-        const max = Number(maxValue);
-
-        if (startValue === '' || maxValue === '') {
-            setError('Both fields are required');
-            setIsValid(false);
-            return;
+        // Validate whenever minValue or maxValue changes
+        if (minValue >= maxValue) {
+            setError('Min value must be less than max value');
+        } else if (minValue < 0) {
+            setError('Min value cannot be negative');
+        } else {
+            setError(null);
         }
-
-        if (isNaN(start) || isNaN(max)) {
-            setError('Please enter valid numbers');
-            setIsValid(false);
-            return;
-        }
-
-        if (start < 0 || max < 0) {
-            setError('Value cannot be negative');
-            setIsValid(false);
-            return;
-        }
-
-        if (start >= max) {
-            setError('Start value must be less than max value');
-            setIsValid(false);
-            return;
-        }
-
-        setError(null);
-        setIsValid(true);
-    }, [startValue, maxValue]);
+    }, [minValue, maxValue]);
 
     const onStartChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setStartValue(event.target.value);
+        const value = Number(event.target.value);
+        if (!isNaN(value)) {
+            dispatch(setMinValue(value));
+        }
     };
 
     const onMaxChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setMaxValue(event.target.value);
+        const value = Number(event.target.value);
+        if (!isNaN(value)) {
+            dispatch(setMaxValue(value));
+        }
     };
-
-    const setToLocalStorage = () => {
-        if (isValid) {
-            localStorage.setItem('startValue', startValue);
-            localStorage.setItem('maxValue', maxValue);
+    const handleSave = () => {
+        if (!error) {
             onClose();
         }
     };
-
     return (
         <Container className={'container'}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
                 <label>Start value</label>
                 <CustomInput
-                    value={startValue}
+                    value={minValue}
                     className={error ? 'error' : ''}
                     onChange={onStartChangeHandler}
+
                 />
                 <label>Max value</label>
                 <CustomInput
@@ -78,13 +64,11 @@ export const Settings = ({ onClose }: SettingsProps) => {
 
                 />
 
-                {error && <div className={'error-message'}>{error}</div>}
-
                 <Box sx={{ mt: 2 }}>
                     <CustomButton
                         title={'set'}
-                        onClick={setToLocalStorage}
-                        disabled={!isValid}
+                        onClick={handleSave}
+                        disabled={!!error}
                     />
                 </Box>
             </Box>

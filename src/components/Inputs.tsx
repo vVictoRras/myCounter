@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 
 type InputProps = {
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    value: string;
+    value: number;
     className: string;
  }
 
